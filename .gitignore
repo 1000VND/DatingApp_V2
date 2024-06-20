@@ -479,3 +479,4 @@ API/appsettings.json
 
 # Vim temporary swap files
 *.swp
+API/appsettings.json

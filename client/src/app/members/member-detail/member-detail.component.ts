@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TimeagoModule } from 'ngx-timeago';
 import { Member } from 'src/app/models/member';
 import { MembersService } from 'src/app/services/members.service';
 
@@ -11,11 +12,17 @@ import { MembersService } from 'src/app/services/members.service';
   standalone: true,
   templateUrl: './member-detail.component.html',
   styleUrls: ['./member-detail.component.css'],
-  imports: [CommonModule, TabsModule, GalleryModule]
+  imports: [
+    CommonModule,
+    TabsModule,
+    GalleryModule,
+    TimeagoModule
+  ]
 })
 export class MemberDetailComponent implements OnInit {
   member: Member | undefined;
   images: GalleryItem[] = [];
+  statusActive: boolean = true;
 
   constructor(
     private memberService: MembersService,
@@ -37,6 +44,11 @@ export class MemberDetailComponent implements OnInit {
       next: member => {
         this.member = member,
           this.getImages();
+      },
+      complete: () => {
+        if (this.member) {
+          this.statusActive = this.getStatusActive(this.member);
+        }
       }
     });
   }
@@ -51,4 +63,12 @@ export class MemberDetailComponent implements OnInit {
     }
   }
 
+  getStatusActive(member: Member) {
+    const lastActiveDate = new Date(member.lastActive);
+    const now = new Date();
+    const diffInMs = now.getTime() - lastActiveDate.getTime();
+    const diffInMinutes = diffInMs / (1000 * 60);
+    if (diffInMinutes > 60) return false;
+    return true;
+  }
 }

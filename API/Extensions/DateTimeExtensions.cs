@@ -4,7 +4,7 @@
     {
         public static int CalcuateAge(this DateTime dob)
         {
-            var today = DateTime.UtcNow;
+            var today = DateTime.Now;
 
             var age = today.Year - dob.Year;
 

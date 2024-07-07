@@ -1,25 +1,32 @@
 name: docker-push
 
 on:
+  # kích hoạt workflow thủ công từ tab GitHub Actions trong repository
   workflow_dispatch:
 
+  # Nếu muốn tự động build khi push code lên main branch thì sử dụng cấu hình sau:
+  push:
+    branches:
+      - main
+
+# Các công việc sẽ chạy trong workflow
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    steps:
+  docker: # Tên của công việc
+    runs-on: ubuntu-latest # Chỉ định máy ảo (runner) mà công việc sẽ chạy trên đó
+    steps: # Danh sách các bước thực thi trong công việc
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3 # Sử dụng action setup-buildx-action
       -
-        name: Login to Docker Hub
-        uses: docker/login-action@v3
+        name: Login to Docker Hub # Đăng nhập vào Docker Hub
+        uses: docker/login-action@v3 # Sử dụng action login-action
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: "{{defaultContext}}:API"
-          push: true
-          tags: hung057/datingapp:latest
+        uses: docker/build-push-action@v6 # Sử dụng action build-push-action
+        with: # Cấu hình cho action build-push-action
+          context: "{{defaultContext}}:API" # Thư mục chứa Dockerfile
+          push: true # Push image lên Docker Hub
+          tags: hung057/datingapp:latest # Tag cho image

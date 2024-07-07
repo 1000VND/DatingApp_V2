@@ -11,11 +11,6 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            var connectionString = config.GetConnectionString("DefaultConnection");
-
-            services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(connectionString));
-
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -25,6 +20,7 @@ namespace API.Extensions
             services.AddSignalR();
             services.AddSingleton<PresenceTracker>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             return services;
         }
